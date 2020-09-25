@@ -2,6 +2,7 @@ package com.cooksys.quizapp.controllers;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -42,39 +43,47 @@ public class QuizController {
 	}
 
 	// Deletes the specified quiz, returning a copy of the deleted quiz
+	// Returns 404 if the specified quiz does not exist
 	@DeleteMapping("/{id}")
-	public OutgoingQuizDto DeleteQuiz(@PathVariable("id") Long id) {
-		OutgoingQuizDto result = quizService.deleteQuiz(id);
+	public ResponseEntity<OutgoingQuizDto> DeleteQuiz(@PathVariable("id") Long id) {
+		ResponseEntity<OutgoingQuizDto> result = quizService.deleteQuiz(id);
 		return result;
 	}
 
 	// Renames the specified quiz to the new name, returning the renamed quiz
+	// Returns 404 if the specified quiz does not exist
 	@PatchMapping("/{id}/rename/{newName}")
-	public OutgoingQuizDto PatchQuizName(@PathVariable("id") Long id, @PathVariable("newName") String newName) {
-		OutgoingQuizDto result = quizService.patchQuizName(id, newName);
+	public ResponseEntity<OutgoingQuizDto> PatchQuizName(@PathVariable("id") Long id,
+			@PathVariable("newName") String newName) {
+		ResponseEntity<OutgoingQuizDto> result = quizService.patchQuizName(id, newName);
 		return result;
 	}
 
 	// Retrieves a random question from the specified quiz
+	// Returns 404 if the specified quiz does not exist or has no questions
 	@GetMapping("/{id}/random")
-	public OutgoingQuestionDto GetRandomQuestion(@PathVariable("id") Long id) {
-		OutgoingQuestionDto result = quizService.getRandomQuestion(id);
+	public ResponseEntity<OutgoingQuestionDto> GetRandomQuestion(@PathVariable("id") Long id) {
+		ResponseEntity<OutgoingQuestionDto> result = quizService.getRandomQuestion(id);
 		return result;
 	}
 
 	// Adds the sent question to the specified quiz, returning the modified quiz
+	// Returns 404 if the specified quiz does not exist
 	@PatchMapping("/{id}/add")
-	public OutgoingQuizDto PatchAddQuestion(@RequestBody QuestionDto question, @PathVariable("id") Long id) {
-		OutgoingQuizDto result = quizService.patchAddQuestion(question, id);
+	public ResponseEntity<OutgoingQuizDto> PatchAddQuestion(@RequestBody QuestionDto question,
+			@PathVariable("id") Long id) {
+		ResponseEntity<OutgoingQuizDto> result = quizService.patchAddQuestion(question, id);
 		return result;
 	}
 
 	// Deletes the specified question from the specified quiz, returning the deleted
 	// question
+	// Returns 404 if the specified quiz or the specified question do not exist
+	// or if the specified quiz does not contain the specified question
 	@DeleteMapping("{id}/delete/{questionId}")
-	public OutgoingQuestionDto DeleteQuestion(@PathVariable("id") Long id,
+	public ResponseEntity<OutgoingQuestionDto> DeleteQuestion(@PathVariable("id") Long id,
 			@PathVariable("questionId") Long questionId) {
-		OutgoingQuestionDto result = quizService.deleteQuestionFromQuiz(id, questionId);
+		ResponseEntity<OutgoingQuestionDto> result = quizService.deleteQuestionFromQuiz(id, questionId);
 		return result;
 	}
 

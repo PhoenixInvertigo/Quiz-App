@@ -2,6 +2,8 @@ package com.cooksys.quizapp.dtos;
 
 import org.springframework.stereotype.Component;
 
+//This dto doesn't contain the "correct" field so as not to reveal the answer 
+
 @Component
 public class OutgoingAnswerDto {
 

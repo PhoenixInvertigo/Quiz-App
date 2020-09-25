@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
+//This dto keeps the "correct" field of its answers hidden
+
 @Component
 public class OutgoingQuestionDto {
 
