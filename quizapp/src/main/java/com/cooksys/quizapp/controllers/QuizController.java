@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cooksys.quizapp.dtos.OutgoingQuestionDto;
+import com.cooksys.quizapp.dtos.OutgoingQuizDto;
 import com.cooksys.quizapp.dtos.QuestionDto;
 import com.cooksys.quizapp.dtos.QuizDto;
 import com.cooksys.quizapp.services.QuizService;
@@ -25,45 +27,54 @@ public class QuizController {
 		this.quizService = quizService;
 	}
 
+	// Returns all quizzes in the database
 	@GetMapping
-	public List<QuizDto> GetQuizzes() {
-		List<QuizDto> result = quizService.getAllQuizzes();
+	public List<OutgoingQuizDto> GetQuizzes() {
+		List<OutgoingQuizDto> result = quizService.getAllQuizzes();
 		return result;
 	}
 
+	// Posts the sent quiz to the database, returning the new quiz
 	@PostMapping
-	public QuizDto PostQuiz(@RequestBody QuizDto quiz) {
-		QuizDto result = quizService.postQuiz(quiz);
+	public OutgoingQuizDto PostQuiz(@RequestBody QuizDto quiz) {
+		OutgoingQuizDto result = quizService.postQuiz(quiz);
 		return result;
 	}
 
+	// Deletes the specified quiz, returning a copy of the deleted quiz
 	@DeleteMapping("/{id}")
-	public QuizDto DeleteQuiz(@PathVariable("id") Long id) {
-		QuizDto result = quizService.deleteQuiz(id);
+	public OutgoingQuizDto DeleteQuiz(@PathVariable("id") Long id) {
+		OutgoingQuizDto result = quizService.deleteQuiz(id);
 		return result;
 	}
 
+	// Renames the specified quiz to the new name, returning the renamed quiz
 	@PatchMapping("/{id}/rename/{newName}")
-	public QuizDto PatchQuizName(@PathVariable("id") Long id, @PathVariable("newName") String newName) {
-		QuizDto result = quizService.patchQuizName(id, newName);
+	public OutgoingQuizDto PatchQuizName(@PathVariable("id") Long id, @PathVariable("newName") String newName) {
+		OutgoingQuizDto result = quizService.patchQuizName(id, newName);
 		return result;
 	}
 
+	// Retrieves a random question from the specified quiz
 	@GetMapping("/{id}/random")
-	public QuestionDto GetRandomQuestion(@PathVariable("id") Long id) {
-		QuestionDto result = quizService.getRandomQuestion(id);
+	public OutgoingQuestionDto GetRandomQuestion(@PathVariable("id") Long id) {
+		OutgoingQuestionDto result = quizService.getRandomQuestion(id);
 		return result;
 	}
 
+	// Adds the sent question to the specified quiz, returning the modified quiz
 	@PatchMapping("/{id}/add")
-	public QuizDto PatchAddQuestion(@RequestBody QuestionDto question, @PathVariable("id") Long id) {
-		QuizDto result = quizService.patchAddQuestion(question, id);
+	public OutgoingQuizDto PatchAddQuestion(@RequestBody QuestionDto question, @PathVariable("id") Long id) {
+		OutgoingQuizDto result = quizService.patchAddQuestion(question, id);
 		return result;
 	}
 
+	// Deletes the specified question from the specified quiz, returning the deleted
+	// question
 	@DeleteMapping("{id}/delete/{questionId}")
-	public QuestionDto DeleteQuestion(@PathVariable("id") Long id, @PathVariable("questionId") Long questionId) {
-		QuestionDto result = quizService.deleteQuestionFromQuiz(id, questionId);
+	public OutgoingQuestionDto DeleteQuestion(@PathVariable("id") Long id,
+			@PathVariable("questionId") Long questionId) {
+		OutgoingQuestionDto result = quizService.deleteQuestionFromQuiz(id, questionId);
 		return result;
 	}
 

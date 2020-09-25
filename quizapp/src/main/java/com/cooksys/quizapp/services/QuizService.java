@@ -6,6 +6,8 @@ import java.util.Random;
 
 import org.springframework.stereotype.Service;
 
+import com.cooksys.quizapp.dtos.OutgoingQuestionDto;
+import com.cooksys.quizapp.dtos.OutgoingQuizDto;
 import com.cooksys.quizapp.dtos.QuestionDto;
 import com.cooksys.quizapp.dtos.QuizDto;
 import com.cooksys.quizapp.entities.Answer;
@@ -43,30 +45,29 @@ public class QuizService {
 		this.answerRepository = answerRepository;
 	}
 
-	public List<QuizDto> getAllQuizzes() {
-		List<QuizDto> result = quizMapper.entitiesToDtos(quizRepository.findAll());
+	public List<OutgoingQuizDto> getAllQuizzes() {
+		List<OutgoingQuizDto> result = quizMapper.entitiesToDtos(quizRepository.findAll());
 		return result;
 	}
 
-	public QuizDto postQuiz(QuizDto quizDto) {
+	public OutgoingQuizDto postQuiz(QuizDto quizDto) {
 		Quiz quiz = quizMapper.dtoToEntity(quizDto);
-		quiz = quizRepository.saveAndFlush(quiz);
 		List<Question> questions = quiz.getQuestions();
 		List<Answer> answers;
 		for (Question q : questions) {
 			q.setQuiz(quiz);
-			questionRepository.saveAndFlush(q);
 			answers = q.getAnswers();
 			for (Answer a : answers) {
 				a.setQuestion(q);
-				answerRepository.saveAndFlush(a);
 			}
 		}
-		QuizDto result = quizMapper.entityToDto(quiz);
+		quizRepository.saveAndFlush(quiz);
+
+		OutgoingQuizDto result = quizMapper.entityToDto(quiz);
 		return result;
 	}
 
-	public QuizDto deleteQuiz(Long id) {
+	public OutgoingQuizDto deleteQuiz(Long id) {
 		Optional<Quiz> optionalQuiz = quizRepository.findById(id);
 		Quiz quiz = null;
 		if (optionalQuiz.isPresent()) {
@@ -74,13 +75,13 @@ public class QuizService {
 		} else {
 			return null;
 		}
-		QuizDto result = quizMapper.entityToDto(quiz);
+		OutgoingQuizDto result = quizMapper.entityToDto(quiz);
 		quizRepository.deleteById(quiz.getId());
 
 		return result;
 	}
 
-	public QuizDto patchQuizName(Long id, String newName) {
+	public OutgoingQuizDto patchQuizName(Long id, String newName) {
 		Optional<Quiz> optionalQuiz = quizRepository.findById(id);
 		Quiz quiz = null;
 		if (optionalQuiz.isPresent()) {
@@ -90,11 +91,11 @@ public class QuizService {
 		}
 		quiz.setName(newName);
 		quiz = quizRepository.saveAndFlush(quiz);
-		QuizDto result = quizMapper.entityToDto(quiz);
+		OutgoingQuizDto result = quizMapper.entityToDto(quiz);
 		return result;
 	}
 
-	public QuestionDto getRandomQuestion(Long id) {
+	public OutgoingQuestionDto getRandomQuestion(Long id) {
 		Optional<Quiz> optionalQuiz = quizRepository.findById(id);
 		Quiz quiz = null;
 		if (optionalQuiz.isPresent()) {
@@ -107,11 +108,11 @@ public class QuizService {
 		}
 		Random rand = new Random();
 		Question randomQuestion = quiz.getQuestions().get(rand.nextInt(quiz.getQuestions().size()));
-		QuestionDto result = questionMapper.entityToDto(randomQuestion);
+		OutgoingQuestionDto result = questionMapper.entityToDto(randomQuestion);
 		return result;
 	}
 
-	public QuizDto patchAddQuestion(QuestionDto question, Long id) {
+	public OutgoingQuizDto patchAddQuestion(QuestionDto question, Long id) {
 		Optional<Quiz> optionalQuiz = quizRepository.findById(id);
 		Quiz quiz = null;
 		if (optionalQuiz.isPresent()) {
@@ -120,21 +121,25 @@ public class QuizService {
 			return null;
 		}
 		Question questionEntity = questionMapper.dtoToEntity(question);
-		questionEntity.setQuiz(quiz);
-		questionEntity = questionRepository.saveAndFlush(questionEntity);
-		for (Answer a : questionEntity.getAnswers()) {
-			a.setQuestion(questionEntity);
-			answerRepository.saveAndFlush(a);
-		}
 		List<Question> questions = quiz.getQuestions();
-		questions.add(questionMapper.dtoToEntity(question));
+		questions.add(questionEntity);
 		quiz.setQuestions(questions);
-		quiz = quizRepository.saveAndFlush(quiz);
-		QuizDto result = quizMapper.entityToDto(quiz);
+		questions = quiz.getQuestions();
+
+		List<Answer> answers;
+		for (Question q : questions) {
+			q.setQuiz(quiz);
+			answers = q.getAnswers();
+			for (Answer a : answers) {
+				a.setQuestion(q);
+			}
+		}
+		questionRepository.saveAndFlush(questionEntity);
+		OutgoingQuizDto result = quizMapper.entityToDto(quiz);
 		return result;
 	}
 
-	public QuestionDto deleteQuestionFromQuiz(Long id, Long questionId) {
+	public OutgoingQuestionDto deleteQuestionFromQuiz(Long id, Long questionId) {
 		Optional<Quiz> optionalQuiz = quizRepository.findById(id);
 		Quiz quiz = null;
 		if (optionalQuiz.isPresent()) {
@@ -157,7 +162,7 @@ public class QuizService {
 			return null;
 		}
 		quizRepository.saveAndFlush(quiz);
-		QuestionDto result = questionMapper.entityToDto(question);
+		OutgoingQuestionDto result = questionMapper.entityToDto(question);
 		return result;
 	}
 

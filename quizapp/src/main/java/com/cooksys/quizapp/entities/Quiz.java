@@ -2,13 +2,15 @@ package com.cooksys.quizapp.entities;
 
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 @Entity
 public class Quiz {
@@ -20,7 +22,8 @@ public class Quiz {
 	@Column(nullable = false)
 	private String name;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "quiz", orphanRemoval = true)
+	@OneToMany(mappedBy = "quiz", orphanRemoval = true)
+	@Cascade({ CascadeType.PERSIST })
 	private List<Question> questions;
 
 	public Quiz() {

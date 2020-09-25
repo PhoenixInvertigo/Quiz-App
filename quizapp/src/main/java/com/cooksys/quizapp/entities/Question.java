@@ -11,6 +11,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
 @Entity
 public class Question {
 
@@ -22,9 +25,10 @@ public class Question {
 	private String text;
 
 	@OneToMany(mappedBy = "question", orphanRemoval = true)
+	@Cascade({ CascadeType.PERSIST })
 	private List<Answer> answers;
 
-	@JoinColumn(name = "quiz_id", nullable = true)
+	@JoinColumn(name = "quiz_id", nullable = false)
 	@ManyToOne
 	private Quiz quiz;
 
