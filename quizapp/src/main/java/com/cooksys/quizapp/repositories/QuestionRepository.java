@@ -8,4 +8,6 @@ import com.cooksys.quizapp.entities.Question;
 @Repository
 public interface QuestionRepository extends JpaRepository<Question, Long> {
 
+	public void deleteById(Long id);
+
 }

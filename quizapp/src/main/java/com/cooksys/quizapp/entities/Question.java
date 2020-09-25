@@ -1,6 +1,6 @@
 package com.cooksys.quizapp.entities;
 
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,10 +21,10 @@ public class Question {
 	@Column(nullable = false)
 	private String text;
 
-	@OneToMany(mappedBy = "question")
-	private Set<Answer> answers;
+	@OneToMany(mappedBy = "question", orphanRemoval = true)
+	private List<Answer> answers;
 
-	@JoinColumn(name = "quiz_id", nullable = false)
+	@JoinColumn(name = "quiz_id", nullable = true)
 	@ManyToOne
 	private Quiz quiz;
 
@@ -47,11 +47,11 @@ public class Question {
 		this.text = text;
 	}
 
-	public Set<Answer> getAnswers() {
+	public List<Answer> getAnswers() {
 		return answers;
 	}
 
-	public void setAnswers(Set<Answer> answers) {
+	public void setAnswers(List<Answer> answers) {
 		this.answers = answers;
 	}
 
@@ -61,10 +61,6 @@ public class Question {
 
 	public void setQuiz(Quiz quiz) {
 		this.quiz = quiz;
-	}
-
-	public boolean addAnswer(Answer answer) {
-		return answers.add(answer);
 	}
 
 }

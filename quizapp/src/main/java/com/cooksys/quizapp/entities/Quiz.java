@@ -1,7 +1,8 @@
 package com.cooksys.quizapp.entities;
 
-import java.util.Set;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,8 +20,8 @@ public class Quiz {
 	@Column(nullable = false)
 	private String name;
 
-	@OneToMany(mappedBy = "quiz")
-	private Set<Question> questions;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "quiz", orphanRemoval = true)
+	private List<Question> questions;
 
 	public Quiz() {
 	}
@@ -41,16 +42,12 @@ public class Quiz {
 		this.name = name;
 	}
 
-	public Set<Question> getQuestions() {
+	public List<Question> getQuestions() {
 		return questions;
 	}
 
-	public void setQuestions(Set<Question> questions) {
+	public void setQuestions(List<Question> questions) {
 		this.questions = questions;
-	}
-
-	public boolean addQuestion(Question question) {
-		return questions.add(question);
 	}
 
 }

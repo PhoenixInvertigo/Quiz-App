@@ -21,7 +21,7 @@ public class Answer {
 	@Column(nullable = false)
 	private Boolean correct;
 
-	@JoinColumn(name = "question_id", nullable = false)
+	@JoinColumn(name = "question_id", nullable = true)
 	@ManyToOne
 	private Question question;
 
