@@ -7,21 +7,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class QuestionDto {
 
-	private Long id;
-
 	private String text;
 
 	private List<AnswerDto> answers;
 
 	public QuestionDto() {
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public String getText() {
